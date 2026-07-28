@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tech-challenge-gateway
+  labels:
+    app.kubernetes.io/part-of: tech-challenge-phase4
+    platform.tech-challenge.io/component: gateway
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tech-challenge-apps
+  labels:
+    app.kubernetes.io/part-of: tech-challenge-phase4
+    platform.tech-challenge.io/component: applications
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tech-challenge-messaging
+  labels:
+    app.kubernetes.io/part-of: tech-challenge-phase4
+    platform.tech-challenge.io/component: messaging
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tech-challenge-observability
+  labels:
+    app.kubernetes.io/part-of: tech-challenge-phase4
+    platform.tech-challenge.io/component: observability

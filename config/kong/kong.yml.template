@@ -1,0 +1,191 @@
+_format_version: "3.0"
+_transform: true
+
+services:
+  - name: auth-function
+    url: "${AUTH_FUNCTION_URL}"
+    routes:
+      - name: auth-cpf-token
+        paths:
+          - /auth/cpf
+        methods:
+          - POST
+        strip_path: false
+        tags:
+          - public
+          - auth
+
+  - name: customer-service
+    url: "${CUSTOMER_SERVICE_URL}"
+    routes:
+      - name: customer-health
+        paths:
+          - /customers/health
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - health
+      - name: customer-swagger
+        paths:
+          - /customers/docs
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - docs
+      - name: customer-api
+        paths:
+          - /customers
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+        tags:
+          - protected
+          - customer-service
+
+  - name: os-service
+    url: "${OS_SERVICE_URL}"
+    routes:
+      - name: os-health
+        paths:
+          - /orders/health
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - health
+      - name: os-swagger
+        paths:
+          - /orders/docs
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - docs
+      - name: os-public-status
+        paths:
+          - /orders/public/status
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - order-status
+      - name: os-api
+        paths:
+          - /orders
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+        tags:
+          - protected
+          - os-service
+
+  - name: workshop-service
+    url: "${WORKSHOP_SERVICE_URL}"
+    routes:
+      - name: workshop-health
+        paths:
+          - /workshop/health
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - health
+      - name: workshop-swagger
+        paths:
+          - /workshop/docs
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - docs
+      - name: workshop-api
+        paths:
+          - /workshop
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+        tags:
+          - protected
+          - workshop-service
+
+  - name: billing-service
+    url: "${BILLING_SERVICE_URL}"
+    routes:
+      - name: billing-health
+        paths:
+          - /billing/health
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - health
+      - name: billing-swagger
+        paths:
+          - /billing/docs
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - docs
+      - name: billing-public-budget-response
+        paths:
+          - /billing/public/budgets
+        methods:
+          - POST
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - budget-response
+      - name: billing-mercado-pago-webhook
+        paths:
+          - /billing/webhooks/mercado-pago
+        methods:
+          - POST
+        strip_path: false
+        tags:
+          - public
+          - provider-webhook
+      - name: billing-api
+        paths:
+          - /billing
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+        tags:
+          - protected
+          - billing-service
+
+consumers:
+  - username: cpf-auth-function
+    jwt_secrets:
+      - key: "${JWT_ISSUER}"
+        algorithm: HS256
+        secret: "${JWT_SHARED_SECRET}"

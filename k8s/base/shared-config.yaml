@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-shared-config
+  namespace: tech-challenge-apps
+  labels:
+    app.kubernetes.io/name: platform-shared-config
+    app.kubernetes.io/part-of: tech-challenge-phase4
+data:
+  CORRELATION_ID_HEADER: x-correlation-id
+  LOG_FORMAT: json
+  LOG_LEVEL: info
+  METRICS_PATH: /metrics
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.tech-challenge-observability.svc.cluster.local:4318
+  RABBITMQ_URL_SECRET_NAME: platform-rabbitmq-connection
+  REQUIRED_CORRELATION_HEADERS: x-correlation-id,x-saga-id
+  SAGA_ID_HEADER: x-saga-id
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: platform-rabbitmq-connection
+  namespace: tech-challenge-apps
+  labels:
+    app.kubernetes.io/name: platform-rabbitmq-connection
+    app.kubernetes.io/part-of: tech-challenge-phase4
+type: Opaque
+stringData:
+  RABBITMQ_URL: replace-with-secret-manager-or-local-rabbitmq-url
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: platform-jwt-validation
+  namespace: tech-challenge-apps
+  labels:
+    app.kubernetes.io/name: platform-jwt-validation
+    app.kubernetes.io/part-of: tech-challenge-phase4
+type: Opaque
+stringData:
+  JWT_ISSUER: replace-with-auth-function-issuer
+  JWT_SHARED_SECRET: replace-with-secret-manager-value

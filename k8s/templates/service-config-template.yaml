@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: service-config-template
+  namespace: tech-challenge-apps
+  labels:
+    app.kubernetes.io/part-of: tech-challenge-phase4
+    platform.tech-challenge.io/template: "true"
+data:
+  LOG_FORMAT: json
+  LOG_LEVEL: info
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector.tech-challenge-observability.svc.cluster.local:4318
+  RABBITMQ_URL_SECRET_NAME: platform-rabbitmq-connection
+  SERVICE_DATABASE_SECRET_ARN: replace-with-platform-db-output

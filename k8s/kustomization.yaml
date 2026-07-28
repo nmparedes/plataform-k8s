@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - base
+  - gateway/kong.yaml
+  - messaging/rabbitmq.yaml
+  - observability/prometheus.yaml
+  - observability/grafana.yaml
+  - observability/otel-collector.yaml
+  - observability/otel-log-collector.yaml

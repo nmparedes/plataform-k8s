@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: otel-log-collector-config
+  namespace: tech-challenge-observability
+  labels:
+    app.kubernetes.io/name: otel-log-collector
+    app.kubernetes.io/part-of: tech-challenge-phase4
+data:
+  otel-log-collector-config.yaml: |
+    receivers:
+      filelog:
+        include:
+          - /var/log/pods/tech-challenge-*/*/*.log
+        include_file_path: true
+        start_at: end
+        operators:
+          - type: json_parser
+            parse_from: body
+            parse_to: attributes
+            if: 'body matches "^\\{"'
+          - type: move
+            from: attributes.correlationId
+            to: resource["correlationId"]
+            if: 'attributes.correlationId != nil'
+          - type: move
+            from: attributes.sagaId
+            to: resource["sagaId"]
+            if: 'attributes.sagaId != nil'
+    processors:
+      batch: {}
+      resource:
+        attributes:
+          - key: log.format
+            value: json
+            action: upsert
+          - key: correlation.required
+            value: "true"
+            action: upsert
+    exporters:
+      logging:
+        verbosity: normal
+    service:
+      pipelines:
+        logs:
+          receivers: [filelog]
+          processors: [resource, batch]
+          exporters: [logging]
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: otel-log-collector
+  namespace: tech-challenge-observability
+  labels:
+    app.kubernetes.io/name: otel-log-collector
+    app.kubernetes.io/part-of: tech-challenge-phase4
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: otel-log-collector
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: otel-log-collector
+        app.kubernetes.io/part-of: tech-challenge-phase4
+    spec:
+      containers:
+        - name: otel-log-collector
+          image: otel/opentelemetry-collector-contrib:0.100.0
+          args:
+            - --config=/etc/otelcol/otel-log-collector-config.yaml
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi
+          volumeMounts:
+            - name: config
+              mountPath: /etc/otelcol/otel-log-collector-config.yaml
+              subPath: otel-log-collector-config.yaml
+              readOnly: true
+            - name: pod-logs
+              mountPath: /var/log/pods
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: otel-log-collector-config
+        - name: pod-logs
+          hostPath:
+            path: /var/log/pods
+            type: DirectoryOrCreate

@@ -1,0 +1,40 @@
+name: Platform K8s CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - homologation
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Validate platform configuration
+        run: npm run validate
+
+      - name: Render Kubernetes manifests
+        run: |
+          mkdir -p rendered
+          kubectl kustomize k8s > rendered/platform-k8s.yaml
+
+      - name: Upload rendered manifests
+        uses: actions/upload-artifact@v4
+        with:
+          name: platform-k8s-rendered-${{ github.sha }}
+          path: rendered/platform-k8s.yaml
