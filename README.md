@@ -45,6 +45,24 @@ flowchart LR
 - `kubectl`
 - Kustomize via `kubectl kustomize`
 
+## Runtime Target Status
+
+The current repository structure assumes an already reachable Kubernetes API
+server through `KUBECONFIG_B64` across `platform-k8s` and all service CD
+workflows.
+
+A real AWS runtime target for these manifests would require, at minimum:
+
+- an EKS control plane or equivalent managed Kubernetes offering;
+- worker capacity for gateway, messaging, observability and all services;
+- kubeconfig generation/distribution for every repository workflow;
+- cloud load balancer, IAM and secret injection decisions not yet encoded in
+  this repository set.
+
+That exceeds the minimum-scope runtime step implemented here. Because of that,
+this repository remains manifest-only in this step, and Kubernetes cluster
+provisioning is still manual/pending.
+
 ## Validation Commands
 
 ```bash
@@ -80,6 +98,10 @@ CD is configured for:
 
 CD applies only platform manifests from this repository. No microservice
 manifest is owned here.
+
+The Kubernetes runtime target itself is not provisioned automatically in this
+step because doing so would require broader EKS/bootstrap work than the current
+academic-minimal scope allows.
 
 ## Observability
 
