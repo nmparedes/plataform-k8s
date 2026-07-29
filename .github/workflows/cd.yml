@@ -109,7 +109,7 @@ jobs:
       - name: Wait for platform rollouts
         run: |
           kubectl rollout status deployment/kong-gateway -n tech-challenge-gateway --timeout=5m
-          kubectl rollout status deployment/rabbitmq -n tech-challenge-messaging --timeout=5m
+          kubectl rollout status statefulset/rabbitmq -n tech-challenge-messaging --timeout=5m
           kubectl rollout status deployment/prometheus -n tech-challenge-observability --timeout=5m
           kubectl rollout status deployment/grafana -n tech-challenge-observability --timeout=5m
           kubectl rollout status deployment/otel-collector -n tech-challenge-observability --timeout=5m
