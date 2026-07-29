@@ -54,12 +54,29 @@ services:
           - public
           - customer-status
 
+  - name: customer-service-signup
+    url: "${CUSTOMER_SERVICE_URL}"
+    routes:
+      - name: customer-signup
+        paths:
+          - /customers
+        methods:
+          - POST
+        strip_path: false
+        tags:
+          - public
+          - customer-signup
+
   - name: customer-service
     url: "${CUSTOMER_SERVICE_URL}"
     routes:
       - name: customer-api
         paths:
           - /customers
+        methods:
+          - GET
+          - PATCH
+          - DELETE
         strip_path: false
         plugins:
           - name: jwt
