@@ -22,6 +22,15 @@ metadata:
 data:
   definitions.json: |
     {
+      "vhosts": [
+        { "name": "/" }
+      ],
+      "users": [
+        { "name": "guest", "password": "guest", "tags": ["administrator"] }
+      ],
+      "permissions": [
+        { "user": "guest", "vhost": "/", "configure": ".*", "read": ".*", "write": ".*" }
+      ],
       "exchanges": [
         { "name": "orders.topic", "vhost": "/", "type": "topic", "durable": true, "auto_delete": false },
         { "name": "billing.topic", "vhost": "/", "type": "topic", "durable": true, "auto_delete": false },
@@ -62,6 +71,7 @@ data:
     }
   rabbitmq.conf: |
     management.load_definitions = /etc/rabbitmq/definitions.json
+    loopback_users = none
     log.console = true
     log.console.level = info
 ---
@@ -104,6 +114,8 @@ spec:
                 - ping
             initialDelaySeconds: 20
             periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 6
           livenessProbe:
             exec:
               command:
@@ -111,6 +123,8 @@ spec:
                 - ping
             initialDelaySeconds: 60
             periodSeconds: 30
+            timeoutSeconds: 5
+            failureThreshold: 5
           resources:
             requests:
               cpu: 100m
