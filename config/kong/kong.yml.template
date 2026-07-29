@@ -42,14 +42,14 @@ services:
           - docs
 
   - name: customer-service-status
-    url: "${CUSTOMER_SERVICE_URL}"
+    url: "${CUSTOMER_SERVICE_URL}/customers/status"
     routes:
       - name: customer-status
         paths:
-          - /customers/status
+          - /customer-status
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - customer-status
