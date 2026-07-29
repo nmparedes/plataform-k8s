@@ -64,7 +64,9 @@ jobs:
       - name: Configure kubeconfig
         run: |
           mkdir -p "${HOME}/.kube"
-          printf '%s' "${KUBECONFIG_B64}" | base64 --decode > "${HOME}/.kube/config"
+          printf '%s' "${KUBECONFIG_B64}" \
+            | tr -d '\r\n\t ' \
+            | base64 --decode > "${HOME}/.kube/config"
           chmod 600 "${HOME}/.kube/config"
 
       - name: Prepare derived platform configuration
