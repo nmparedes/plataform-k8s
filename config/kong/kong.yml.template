@@ -87,6 +87,19 @@ services:
         tags:
           - protected
           - customer-service
+      - name: vehicle-api
+        paths:
+          - /vehicles
+        strip_path: false
+        plugins:
+          - name: jwt
+            config:
+              key_claim_name: iss
+              claims_to_verify:
+                - exp
+        tags:
+          - protected
+          - customer-service
 
   - name: os-service-health
     url: "${OS_SERVICE_URL}/health"
