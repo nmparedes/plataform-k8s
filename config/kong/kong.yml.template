@@ -41,6 +41,19 @@ services:
           - public
           - docs
 
+  - name: customer-service-status
+    url: "${CUSTOMER_SERVICE_URL}"
+    routes:
+      - name: customer-status
+        paths:
+          - /customers/status
+        methods:
+          - GET
+        strip_path: false
+        tags:
+          - public
+          - customer-status
+
   - name: customer-service
     url: "${CUSTOMER_SERVICE_URL}"
     routes:
