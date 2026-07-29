@@ -21,6 +21,10 @@ jobs:
       contents: read
     environment: homologation
     env:
+      AWS_REGION: ${{ vars.AWS_REGION }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
       KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
       AUTH_FUNCTION_URL: ${{ vars.AUTH_FUNCTION_URL }}
       CUSTOMER_SERVICE_URL: http://customer-service.tech-challenge-apps.svc.cluster.local:3000
@@ -45,12 +49,23 @@ jobs:
 
       - name: Require deployment configuration
         run: |
+          test -n "${AWS_REGION}" || { echo "AWS_REGION is required."; exit 1; }
+          test -n "${AWS_ACCESS_KEY_ID}" || { echo "AWS_ACCESS_KEY_ID is required."; exit 1; }
+          test -n "${AWS_SECRET_ACCESS_KEY}" || { echo "AWS_SECRET_ACCESS_KEY is required."; exit 1; }
           test -n "${KUBECONFIG_B64}" || { echo "KUBECONFIG_B64 is required."; exit 1; }
           test -n "${AUTH_FUNCTION_URL}" || { echo "AUTH_FUNCTION_URL is required."; exit 1; }
           test -n "${JWT_ISSUER}" || { echo "JWT_ISSUER is required."; exit 1; }
           test -n "${JWT_SHARED_SECRET}" || { echo "JWT_SHARED_SECRET is required."; exit 1; }
           test -n "${RABBITMQ_DEFAULT_USER}" || { echo "RABBITMQ_DEFAULT_USER is required."; exit 1; }
           test -n "${RABBITMQ_DEFAULT_PASS}" || { echo "RABBITMQ_DEFAULT_PASS is required."; exit 1; }
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-session-token: ${{ secrets.AWS_SESSION_TOKEN }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Install dependencies
         run: npm ci
