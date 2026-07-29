@@ -170,7 +170,8 @@ function validateNoRealSecrets(file, content) {
     return;
   }
 
-  const suspiciousSecret = /password:\s+(?!replace-with)[^\s]+|PASS:\s+(?!replace-with)[^\s]+|SECRET:\s+(?!replace-with)[^\s]+/i;
+  const suspiciousSecret =
+    /password:\s+(?!(replace-with|\$\{))[^\s]+|PASS:\s+(?!(replace-with|\$\{))[^\s]+|SECRET:\s+(?!(replace-with|\$\{))[^\s]+/i;
   if (suspiciousSecret.test(content)) {
     failures.push(`Manifest appears to contain a real secret: ${file}`);
   }

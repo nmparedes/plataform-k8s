@@ -22,6 +22,15 @@ jobs:
     environment: homologation
     env:
       KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
+      AUTH_FUNCTION_URL: ${{ vars.AUTH_FUNCTION_URL }}
+      CUSTOMER_SERVICE_URL: http://customer-service.tech-challenge-apps.svc.cluster.local:3000
+      OS_SERVICE_URL: http://os-service.tech-challenge-apps.svc.cluster.local:3000
+      WORKSHOP_SERVICE_URL: http://workshop-service.tech-challenge-apps.svc.cluster.local:3000
+      BILLING_SERVICE_URL: http://billing-service.tech-challenge-apps.svc.cluster.local:3000
+      JWT_ISSUER: ${{ vars.JWT_ISSUER }}
+      JWT_SHARED_SECRET: ${{ secrets.JWT_SHARED_SECRET }}
+      RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_DEFAULT_USER }}
+      RABBITMQ_DEFAULT_PASS: ${{ secrets.RABBITMQ_DEFAULT_PASS }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -35,7 +44,13 @@ jobs:
           cache: npm
 
       - name: Require deployment configuration
-        run: test -n "${KUBECONFIG_B64}" || { echo "KUBECONFIG_B64 is required."; exit 1; }
+        run: |
+          test -n "${KUBECONFIG_B64}" || { echo "KUBECONFIG_B64 is required."; exit 1; }
+          test -n "${AUTH_FUNCTION_URL}" || { echo "AUTH_FUNCTION_URL is required."; exit 1; }
+          test -n "${JWT_ISSUER}" || { echo "JWT_ISSUER is required."; exit 1; }
+          test -n "${JWT_SHARED_SECRET}" || { echo "JWT_SHARED_SECRET is required."; exit 1; }
+          test -n "${RABBITMQ_DEFAULT_USER}" || { echo "RABBITMQ_DEFAULT_USER is required."; exit 1; }
+          test -n "${RABBITMQ_DEFAULT_PASS}" || { echo "RABBITMQ_DEFAULT_PASS is required."; exit 1; }
 
       - name: Install dependencies
         run: npm ci
@@ -43,14 +58,33 @@ jobs:
       - name: Validate platform configuration
         run: npm run validate
 
+      - name: Render Kong configuration
+        run: npm run render:kong
+
       - name: Configure kubeconfig
         run: |
           mkdir -p "${HOME}/.kube"
           printf '%s' "${KUBECONFIG_B64}" | base64 --decode > "${HOME}/.kube/config"
           chmod 600 "${HOME}/.kube/config"
 
+      - name: Prepare derived platform configuration
+        run: |
+          echo "PLATFORM_RABBITMQ_URL=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq.tech-challenge-messaging.svc.cluster.local:5672" >> "${GITHUB_ENV}"
+
+      - name: Apply Kong declarative configuration
+        run: |
+          kubectl create configmap kong-declarative-config \
+            --from-file=kong.yml=generated/kong.yml \
+            -n tech-challenge-gateway \
+            --dry-run=client \
+            -o yaml \
+            | kubectl apply -f -
+
       - name: Apply platform manifests
-        run: kubectl apply -k k8s
+        run: |
+          kubectl kustomize k8s \
+            | python3 -c 'import os,sys; sys.stdout.write(os.path.expandvars(sys.stdin.read()))' \
+            | kubectl apply -f -
 
       - name: Wait for platform rollouts
         run: |
