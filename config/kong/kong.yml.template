@@ -15,27 +15,35 @@ services:
           - public
           - auth
 
-  - name: customer-service
-    url: "${CUSTOMER_SERVICE_URL}"
+  - name: customer-service-health
+    url: "${CUSTOMER_SERVICE_URL}/health"
     routes:
       - name: customer-health
         paths:
           - /customers/health
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - health
+
+  - name: customer-service-docs
+    url: "${CUSTOMER_SERVICE_URL}/docs"
+    routes:
       - name: customer-swagger
         paths:
           - /customers/docs
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - docs
+
+  - name: customer-service
+    url: "${CUSTOMER_SERVICE_URL}"
+    routes:
       - name: customer-api
         paths:
           - /customers
@@ -50,36 +58,48 @@ services:
           - protected
           - customer-service
 
-  - name: os-service
-    url: "${OS_SERVICE_URL}"
+  - name: os-service-health
+    url: "${OS_SERVICE_URL}/health"
     routes:
       - name: os-health
         paths:
           - /orders/health
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - health
+
+  - name: os-service-docs
+    url: "${OS_SERVICE_URL}/docs"
+    routes:
       - name: os-swagger
         paths:
           - /orders/docs
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - docs
+
+  - name: os-service-public-status
+    url: "${OS_SERVICE_URL}/public/orders/status-consultation"
+    routes:
       - name: os-public-status
         paths:
           - /orders/public/status
         methods:
-          - GET
-        strip_path: false
+          - POST
+        strip_path: true
         tags:
           - public
           - order-status
+
+  - name: os-service
+    url: "${OS_SERVICE_URL}"
+    routes:
       - name: os-api
         paths:
           - /orders
@@ -94,31 +114,39 @@ services:
           - protected
           - os-service
 
-  - name: workshop-service
-    url: "${WORKSHOP_SERVICE_URL}"
+  - name: workshop-service-health
+    url: "${WORKSHOP_SERVICE_URL}/health"
     routes:
       - name: workshop-health
         paths:
           - /workshop/health
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - health
+
+  - name: workshop-service-docs
+    url: "${WORKSHOP_SERVICE_URL}/docs"
+    routes:
       - name: workshop-swagger
         paths:
           - /workshop/docs
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - docs
+
+  - name: workshop-service
+    url: "${WORKSHOP_SERVICE_URL}"
+    routes:
       - name: workshop-api
         paths:
           - /workshop
-        strip_path: false
+        strip_path: true
         plugins:
           - name: jwt
             config:
@@ -129,50 +157,66 @@ services:
           - protected
           - workshop-service
 
-  - name: billing-service
-    url: "${BILLING_SERVICE_URL}"
+  - name: billing-service-health
+    url: "${BILLING_SERVICE_URL}/health"
     routes:
       - name: billing-health
         paths:
           - /billing/health
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - health
+
+  - name: billing-service-docs
+    url: "${BILLING_SERVICE_URL}/docs"
+    routes:
       - name: billing-swagger
         paths:
           - /billing/docs
         methods:
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - docs
+
+  - name: billing-service-public-budgets
+    url: "${BILLING_SERVICE_URL}/budgets"
+    routes:
       - name: billing-public-budget-response
         paths:
           - /billing/public/budgets
         methods:
           - POST
           - GET
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - budget-response
+
+  - name: billing-service-mercado-pago-webhook
+    url: "${BILLING_SERVICE_URL}/webhooks/mercado-pago"
+    routes:
       - name: billing-mercado-pago-webhook
         paths:
           - /billing/webhooks/mercado-pago
         methods:
           - POST
-        strip_path: false
+        strip_path: true
         tags:
           - public
           - provider-webhook
+
+  - name: billing-service
+    url: "${BILLING_SERVICE_URL}"
+    routes:
       - name: billing-api
         paths:
           - /billing
-        strip_path: false
+        strip_path: true
         plugins:
           - name: jwt
             config:
