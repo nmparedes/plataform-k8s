@@ -26,7 +26,7 @@ metadata:
     app.kubernetes.io/part-of: tech-challenge-phase4
 type: Opaque
 stringData:
-  RABBITMQ_URL: replace-with-secret-manager-or-local-rabbitmq-url
+  RABBITMQ_URL: ${PLATFORM_RABBITMQ_URL}
 ---
 apiVersion: v1
 kind: Secret
@@ -38,5 +38,5 @@ metadata:
     app.kubernetes.io/part-of: tech-challenge-phase4
 type: Opaque
 stringData:
-  JWT_ISSUER: replace-with-auth-function-issuer
-  JWT_SHARED_SECRET: replace-with-secret-manager-value
+  JWT_ISSUER: ${JWT_ISSUER}
+  JWT_SHARED_SECRET: ${JWT_SHARED_SECRET}

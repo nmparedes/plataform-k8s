@@ -8,8 +8,8 @@ metadata:
     app.kubernetes.io/part-of: tech-challenge-phase4
 type: Opaque
 stringData:
-  RABBITMQ_DEFAULT_USER: replace-with-rabbitmq-user
-  RABBITMQ_DEFAULT_PASS: replace-with-rabbitmq-password
+  RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
+  RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
 ---
 apiVersion: v1
 kind: ConfigMap

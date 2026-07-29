@@ -68,3 +68,12 @@ kubectl apply -k k8s
 Cloud-specific values such as load balancer annotations, secret manager
 integration and production resource sizing must be added through explicit later
 steps. This repository currently contains the shared foundation only.
+
+## Runtime Provisioning Boundary
+
+This repository does not provision the Kubernetes runtime target in this step.
+The manifests here are compatible with a future EKS-backed target, but creating
+that target would also require cluster lifecycle, node capacity, kubeconfig
+distribution and cloud-specific integration decisions across multiple
+repositories. That is intentionally deferred to keep the runtime automation
+minimal and supportable for the academic delivery.
