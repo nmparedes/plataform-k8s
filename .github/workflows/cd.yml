@@ -88,6 +88,9 @@ jobs:
         run: |
           echo "PLATFORM_RABBITMQ_URL=amqp://${RABBITMQ_DEFAULT_USER}:${RABBITMQ_DEFAULT_PASS}@rabbitmq.tech-challenge-messaging.svc.cluster.local:5672" >> "${GITHUB_ENV}"
 
+      - name: Create platform namespaces
+        run: kubectl apply -f k8s/base/namespaces.yaml
+
       - name: Apply Kong declarative configuration
         run: |
           kubectl create configmap kong-declarative-config \
