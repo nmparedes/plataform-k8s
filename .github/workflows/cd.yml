@@ -27,10 +27,10 @@ jobs:
       AWS_SESSION_TOKEN: ${{ secrets.AWS_SESSION_TOKEN }}
       KUBECONFIG_B64: ${{ secrets.KUBECONFIG_B64 }}
       AUTH_FUNCTION_URL: ${{ vars.AUTH_FUNCTION_URL }}
-      CUSTOMER_SERVICE_URL: http://customer-service.tech-challenge-apps.svc.cluster.local:3000
-      OS_SERVICE_URL: http://os-service.tech-challenge-apps.svc.cluster.local:3000
-      WORKSHOP_SERVICE_URL: http://workshop-service.tech-challenge-apps.svc.cluster.local:3000
-      BILLING_SERVICE_URL: http://billing-service.tech-challenge-apps.svc.cluster.local:3000
+      CUSTOMER_SERVICE_URL: http://customer-service.tech-challenge-apps.svc.cluster.local
+      OS_SERVICE_URL: http://os-service.tech-challenge-apps.svc.cluster.local
+      WORKSHOP_SERVICE_URL: http://workshop-service.tech-challenge-apps.svc.cluster.local
+      BILLING_SERVICE_URL: http://billing-service.tech-challenge-apps.svc.cluster.local
       JWT_ISSUER: ${{ vars.JWT_ISSUER }}
       JWT_SHARED_SECRET: ${{ secrets.JWT_SHARED_SECRET }}
       RABBITMQ_DEFAULT_USER: ${{ secrets.RABBITMQ_DEFAULT_USER }}
