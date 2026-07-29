@@ -133,16 +133,8 @@ spec:
         - name: rabbitmq-definitions
           configMap:
             name: rabbitmq-definitions
-  volumeClaimTemplates:
-    - metadata:
-        name: rabbitmq-data
-      spec:
-        storageClassName: gp2
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+        - name: rabbitmq-data
+          emptyDir: {}
 ---
 apiVersion: v1
 kind: Service
