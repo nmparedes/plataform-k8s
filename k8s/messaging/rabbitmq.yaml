@@ -137,6 +137,7 @@ spec:
     - metadata:
         name: rabbitmq-data
       spec:
+        storageClassName: gp2
         accessModes:
           - ReadWriteOnce
         resources:
