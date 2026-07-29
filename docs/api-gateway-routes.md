@@ -28,7 +28,7 @@ template must not contain real credentials or account-specific URLs.
 | `customer-swagger`               | `GET`         | `/customers/docs`                | `CUSTOMER_SERVICE_URL` |
 | `os-health`                      | `GET`         | `/orders/health`                 | `OS_SERVICE_URL`       |
 | `os-swagger`                     | `GET`         | `/orders/docs`                   | `OS_SERVICE_URL`       |
-| `os-public-status`               | `GET`         | `/orders/public/status`          | `OS_SERVICE_URL`       |
+| `os-public-status`               | `POST`        | `/orders/public/status`          | `OS_SERVICE_URL`       |
 | `workshop-health`                | `GET`         | `/workshop/health`               | `WORKSHOP_SERVICE_URL` |
 | `workshop-swagger`               | `GET`         | `/workshop/docs`                 | `WORKSHOP_SERVICE_URL` |
 | `billing-health`                 | `GET`         | `/billing/health`                | `BILLING_SERVICE_URL`  |
